@@ -32,9 +32,9 @@ public class CuentaServices {
 
         return cuentaRepository.save(cuenta);
     }
-    public Cuenta get(Long idCuenta) throws  Exception{
+    public Cuenta get(String idCuenta) throws  Exception{
 
-        return cuentaRepository.getReferenceById(idCuenta);
+        return cuentaRepository.findByNumeroCuenta(idCuenta);
     }
 
     public Cuenta update(Cuenta cuenta) throws Exception{
@@ -48,8 +48,9 @@ public class CuentaServices {
         return cuentaRepository.save(cuentaExistente);
     }
 
-    public void delete(String cuenta){
+    public String delete(String cuenta){
         cuentaRepository.deleteByNumeroCuenta(cuenta);
+        return ("ok");
     }
 
 

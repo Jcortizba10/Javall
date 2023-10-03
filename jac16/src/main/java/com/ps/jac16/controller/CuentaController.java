@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.ArrayList;
 
 @RestController
@@ -15,96 +16,91 @@ import java.util.ArrayList;
 public class CuentaController {
 
     @Autowired
-    CuentaServices cuentaService;
+    CuentaServices cuentaServices;
 
-
-    @GetMapping
-    public ResponseEntity<?> findByAll() {
-
-        try {
-
-            return ResponseEntity.ok().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.OK.getStatusCode())
-                    .message(HttpStatusMessages.OK.getStatusMessage())
-                    .data(cuentaService.findByAll()).build());
-
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
-                    .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage()+":"+e.getMessage())
-                    .data(new ArrayList<Cuenta>()).build());
-        }
-
-    }
-
-    @GetMapping("/{numeroCuenta}")
-    public ResponseEntity<?> obtenerCuentaPorId(@PathVariable String numeroCuenta) throws Exception {
-        try {
-            return ResponseEntity.ok().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.OK.getStatusCode())
-                    .message(HttpStatusMessages.OK.getStatusMessage())
-                    .data(cuentaService.findByNumberCount(numeroCuenta)).build());
-
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
-                    .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage()+":"+e.getMessage())
-                    .data(new ArrayList<Cuenta>()).build());
-        }
-    }
 
     @PostMapping
-    public ResponseEntity<?> crearCuenta(@RequestBody Cuenta cuenta) {
+    public ResponseEntity<?> save(@RequestBody Cuenta cuenta){
         try {
-            return ResponseEntity.ok().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.OK.getStatusCode())
-                    .message(HttpStatusMessages.OK.getStatusMessage())
-                    .data(cuentaService.save(cuenta)).build());
+
+            return ResponseEntity.ok().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.OK.getStatusCode())
+                            .message(HttpStatusMessages.OK.getStatusMessage())
+                            .data(cuentaServices.save(cuenta)).build());
 
 
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
-                    .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage()+":"+e.getMessage())
-                    .data(new ArrayList<Cuenta>()).build());
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
+                            .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage())
+                            .data(new ArrayList<>()).build());
         }
-
     }
 
     @PutMapping
-    public ResponseEntity<?> actualizarCuenta(@RequestBody Cuenta cuenta) {
+    public ResponseEntity<?> update(@RequestBody Cuenta cuenta) {
         try {
-            return ResponseEntity.ok().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.OK.getStatusCode())
-                    .message(HttpStatusMessages.OK.getStatusMessage())
-                    .data(cuentaService.update(cuenta)).build());
+            return ResponseEntity.ok().body(
+                    ApiResponseMessage.builder()
+                        .status(HttpStatusMessages.OK.getStatusCode())
+                        .message(HttpStatusMessages.OK.getStatusMessage())
+                        .data(cuentaServices.save(cuenta)).build());
 
 
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
-                    .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage()+":"+e.getMessage())
-                    .data(new ArrayList<Cuenta>()).build());
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(
+                    ApiResponseMessage.builder()
+                        .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
+                        .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage())
+                        .data(new ArrayList<>()).build());
         }
     }
 
-    @DeleteMapping("/{numeroDeCuenta}")
-    public ResponseEntity<?> eliminarCuenta(@PathVariable String numeroDeCuenta) {
+    @GetMapping("/{numeroCuenta}")
+    public ResponseEntity<?> get( @PathVariable String numeroCuenta){
+
         try {
-            cuentaService.delete(numeroDeCuenta);
-            return ResponseEntity.ok().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.OK.getStatusCode())
-                    .message(HttpStatusMessages.OK.getStatusMessage())
-                    .data(null).build());
+
+            return ResponseEntity.ok().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.OK.getStatusCode())
+                            .message(HttpStatusMessages.OK.getStatusMessage())
+                            .data(cuentaServices.get(numeroCuenta)).build());
+
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
+                            .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage())
+                            .data(new ArrayList<>()).build());
+        }
+
+    }
+
+
+
+    @DeleteMapping("/{numeroCuenta}")
+    public ResponseEntity<?> delete(@PathVariable String numeroCuenta) {
+
+        try {
+
+            return ResponseEntity.ok().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.OK.getStatusCode())
+                            .message(HttpStatusMessages.OK.getStatusMessage())
+                            .data(cuentaServices.delete(numeroCuenta)).build());
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponseMessage.builder()
-                    .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
-                    .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage()+":"+e.getMessage())
-                    .data(null).build());
+            return ResponseEntity.badRequest().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
+                            .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage())
+                            .data(new ArrayList<>()).build());
         }
     }
+
 
 }

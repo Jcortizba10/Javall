@@ -1,70 +1,67 @@
 package com.ps.jac16.controller;
+
+import com.ps.jac16.controller.model.ApiResponseMessage;
+import com.ps.jac16.controller.model.HttpStatusMessages;
 import com.ps.jac16.model.Transferencia;
-import com.ps.jac16.repository.TransferenciaRepositorio;
+import com.ps.jac16.services.TransferenciaSevices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.ArrayList;
+
 
 @RestController
 @RequestMapping("/transferencias")
 public class TransferenciaController {
+
     @Autowired
-    private TransferenciaRepositorio transferenciaRepositorio;
+    TransferenciaSevices transferenciaServices;
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody Transferencia transferencia) {
-        // Realiza la lógica necesaria para guardar la transferencia en la base de datos
-        Transferencia nuevaTransferencia = transferenciaRepositorio.save(transferencia);
-        return ResponseEntity.ok(nuevaTransferencia);
-    }
+    public ResponseEntity<?> save(@RequestBody Transferencia transferencia){
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Transferencia transferencia) {
-        // Verifica si la transferencia con el ID proporcionado existe
-        Optional<Transferencia> transferenciaExistente = transferenciaRepositorio.findById(id);
+        try {
 
-        if (transferenciaExistente.isPresent()) {
-            // Realiza la lógica necesaria para actualizar la transferencia en la base de datos
-            Transferencia transferenciaActualizada = transferenciaRepositorio.save(transferencia);
-            return ResponseEntity.ok(transferenciaActualizada);
-        } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.OK.getStatusCode())
+                            .message(HttpStatusMessages.OK.getStatusMessage())
+                            .data(transferenciaServices.save(transferencia)).build());
+
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
+                            .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage())
+                            .data(new ArrayList<>()).build());
         }
     }
+    @GetMapping("/{numeroTransferencia}")
+    public ResponseEntity<?> get( @PathVariable String numeroTransferencia){
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable Long id) {
-        // Busca la transferencia por ID en la base de datos
-        Optional<Transferencia> transferencia = transferenciaRepositorio.findById(id);
+        try {
 
-        if (transferencia.isPresent()) {
-            return ResponseEntity.ok(transferencia.get());
-        } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.OK.getStatusCode())
+                            .message(HttpStatusMessages.OK.getStatusMessage())
+                            .data(transferenciaServices.get(Long.parseLong(numeroTransferencia))).build());
+
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(
+                    ApiResponseMessage.builder()
+                            .status(HttpStatusMessages.BAD_REQUEST.getStatusCode())
+                            .message(HttpStatusMessages.BAD_REQUEST.getStatusMessage())
+                            .data(new ArrayList<>()).build());
         }
     }
+    @DeleteMapping("/{numeroTransferencia}")
+    public ResponseEntity<?> delete(@PathVariable String numeroTransferencia){
 
-    @GetMapping
-    public ResponseEntity<?> getAll() {
-        // Obtiene todas las transferencias en la base de datos
-        List<Transferencia> transferencias = transferenciaRepositorio.findAll();
-        return ResponseEntity.ok(transferencias);
+        return null;
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        // Verifica si la transferencia con el ID proporcionado existe
-        Optional<Transferencia> transferenciaExistente = transferenciaRepositorio.findById(id);
-
-        if (transferenciaExistente.isPresent()) {
-            // Realiza la lógica necesaria para eliminar la transferencia de la base de datos
-            transferenciaRepositorio.deleteById(id);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }
